@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ল্যাব টেস্ট ক্যালকুলেটর</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+  :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  body{
+    background:#f3f4f6;
+    font-family: 'Noto Sans Bengali', sans-serif;
+  }
+  .sidebar { transition: transform 0.3s ease-in-out; }
+  .overlay { transition: opacity 0.3s ease-in-out; }
+</style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 relative overflow-x-hidden">
+
+<div id="sidebarOverlay" onclick="toggleSidebar()" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden opacity-0"></div>
+
+<!-- সাইডবার -->
+<div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-72 bg-white shadow-2xl z-50 transform -translate-x-full flex flex-col">
+  <div class="p-5 bg-green-700 text-white relative">
+    <button onclick="toggleSidebar()" class="absolute top-4 right-4 text-2xl font-bold hover:text-gray-200">&times;</button>
+    <h2 class="text-xl font-bold mb-3 flex items-center gap-2">🧪 ল্যাব অ্যাসিস্ট্যান্ট</h2>
+    
+    <!-- প্রোফাইল তথ্য -->
+    <div class="flex items-start gap-2">
+      <span class="text-2xl">👨‍💻</span>
+      <div>
+        <p class="text-sm text-green-100 font-bold text-base">MT Nazmul Hasan</p>
+        <p class="text-xs text-green-200 mt-0.5">Radiology and Imaging</p>
+        <p class="text-xs text-green-200">Rangpur IHT</p>
+        <p class="text-xs text-green-200">Season 2019-2020</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4 flex-1 overflow-y-auto">
+    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-2">প্রধান মেনু</p>
+    <ul class="space-y-1 mb-6">
+      <li>
+        <button onclick="toggleSidebar()" class="w-full flex items-center gap-3 text-left px-3 py-3 rounded-lg bg-green-50 text-green-700 font-medium transition-colors">
+          <span class="text-lg">🧮</span> ল্যাব টেস্ট ক্যালকুলেটর
+        </button>
+      </li>
+    </ul>
+
+    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-2">অন্যান্য</p>
+    <ul class="space-y-1">
+      <li>
+        <!-- সরাসরি লিংকে যাওয়ার জন্য <a> ট্যাগ ব্যবহার করা হয়েছে -->
+        <a href="https://nhtechinfobd.blogspot.com/2026/10/blog-post_20.html" target="_blank" class="w-full flex items-center gap-3 text-left px-3 py-3 rounded-lg hover:bg-gray-100 text-gray-700 font-medium transition-colors">
+          <span class="text-lg">ℹ️</span> বিস্তারিত জানতে
+        </a>
+      </li>
+      <li>
+        <button onclick="showAbout()" class="w-full flex items-center gap-3 text-left px-3 py-3 rounded-lg hover:bg-gray-100 text-gray-700 font-medium transition-colors">
+          <span class="text-lg">📖</span> About
+        </button>
+      </li>
+    </ul>
+  </div>
+  
+  <div class="p-4 text-xs text-center text-gray-400 border-t">
+    © 2026 — MT Nazmul Hasan
+  </div>
+</div>
+
+<div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-5 sm:p-8 relative z-10">
+  
+  <div class="flex items-center mb-6">
+    <button onclick="toggleSidebar()" class="p-2 mr-3 bg-green-100 rounded-lg hover:bg-green-200 transition-colors focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+    <div class="flex-1">
+      <h1 class="text-2xl sm:text-3xl font-bold text-green-700 leading-tight">ল্যাব টেস্ট ক্যালকুলেটর</h1>
+      <p class="text-gray-500 text-xs sm:text-sm">বিভিন্ন ক্লিনিক্যাল টেস্টের গাণিতিক হিসাব</p>
+    </div>
+  </div>
+
+  <!-- === ক্যালকুলেটর সেকশন === -->
+  <div id="calcSection" class="block">
+    <label class="block text-gray-700 font-semibold mb-2">টেস্টের ক্যাটাগরি:</label>
+    <select id="cat" class="w-full px-4 py-3 border rounded-xl bg-gray-50 font-medium mb-4"></select>
+    <hr class="mb-5">
+    <div class="flex items-center justify-between mb-3">
+      <h2 id="titleCalc" class="text-lg sm:text-xl font-bold text-gray-800"></h2>
+      <button id="resetCalc" class="text-sm px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700">রিসেট</button>
+    </div>
+    <div id="fieldsCalc" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+    <div id="resultCalc" class="hidden bg-green-50 p-4 rounded-xl border border-green-200 mt-5 space-y-3"></div>
+  </div>
+
+  <p class="mt-8 text-xs text-gray-500 text-center">⚠️ এটি শুধু গণনার সহায়ক টুল। রেফারেন্স রেঞ্জ ল্যাব ও রোগীভেদে ভিন্ন হতে পারে; রোগ নির্ণয় ও চিকিৎসার জন্য চিকিৎসকের পরামর্শ নিন।</p>
+</div>
+
+<script>
+// === সাইডবার কন্ট্রোল ===
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  
+  if (sidebar.classList.contains('-translate-x-full')) {
+    sidebar.classList.remove('-translate-x-full');
+    overlay.classList.remove('hidden');
+    setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+  } else {
+    sidebar.classList.add('-translate-x-full');
+    overlay.classList.add('opacity-0');
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+  }
+}
+
+// === About পপ-আপ ===
+function showAbout() {
+  toggleSidebar();
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px;';
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = 'background: #fff; border-radius: 16px; padding: 24px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); font-family: \'Noto Sans Bengali\', sans-serif;';
+  
+  modal.innerHTML = `
+    <div style="font-size: 40px; margin-bottom: 10px;">📖</div>
+    <h2 style="margin: 0 0 10px 0; color: #15803d; font-size: 22px;">About (এবাউট)</h2>
+    <div style="text-align: left; color: #4b5563; font-size: 15px; line-height: 1.6; background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+      <p style="margin: 0 0 8px 0;"><b>অ্যাপের নাম:</b> ল্যাব অ্যাসিস্ট্যান্ট</p>
+      <p style="margin: 0 0 8px 0;"><b>সংস্করণ:</b> ১.৫.০</p>
+      <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 10px 0;">
+      <p style="margin: 0 0 8px 0;"><b>ডিজাইনার ও ক্রিয়েটর:</b></p>
+      <p style="margin: 0 0 4px 0; font-weight: bold; color: #15803d;">MT Nazmul Hasan</p>
+      <p style="margin: 0 0 4px 0; font-size: 14px;">Radiology and Imaging</p>
+      <p style="margin: 0 0 4px 0; font-size: 14px;">Rangpur IHT</p>
+      <p style="margin: 0; font-size: 14px;">Season 2019-2020</p>
+    </div>
+    <button onclick="this.closest('div[style*=\\'position: fixed\\']').remove()" style="width: 100%; background: #15803d; color: #fff; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;">
+      ঠিক আছে
+    </button>
+  `;
+  
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+}
+
+const BN = '০১২৩৪৫৬৭৮৯';
+const getNum = (id) => {
+  const s = (document.getElementById(id).value || '').replace(/[০-৯]/g, d => BN.indexOf(d)).replace(/[,،٫]/g, '.').trim();
+  return s === '' ? NaN : parseFloat(s);
+};
+const ok = x => !isNaN(x);
+const G = 'bg-green-100 text-green-700', Y = 'bg-yellow-100 text-yellow-700', O = 'bg-orange-100 text-orange-700', R = 'bg-red-100 text-red-700';
+const lvl = (v, steps) => { for (const [lim, t, c] of steps) if (v < lim) return [t, c]; return [steps[steps.length-1][1], steps[steps.length-1][2]]; };
+
+// ==========================================
+// ক্যালকুলেটর সেকশন ডেটা
+// ==========================================
+const S = {
+  lipid: { name: '১. লিপিড প্রোফাইল', title: 'লিপিড প্রোফাইল ক্যালকুলেটর',
+    f: [ ['tc','মোট কোলেস্টেরল (TC)','২০৯'], ['hdl','এইচডিএল (HDL)','৫০'], ['tg','ট্রাইগ্লিসারাইড (TG)','৯৭'] ],
+    calc() {
+      const tc = getNum('tc'), hdl = getNum('hdl'), tg = getNum('tg');
+      let items = [], w = [];
+
+      if (ok(tc)) {
+        items.push({ l: 'মোট কোলেস্টেরল', v: tc + ' mg/dL', st: lvl(tc, [[200,'কাম্য',G],[240,'সীমারেখা',Y],[1e9,'উচ্চ',R]]) });
+      }
+      if (ok(hdl)) {
+        items.push({ l: 'HDL', v: hdl + ' mg/dL', st: lvl(hdl, [[40,'কম',R],[1e9,'গ্রহণযোগ্য',G]]) });
+      }
+      if (ok(tg)) {
+        items.push({ l: 'TG', v: tg + ' mg/dL', st: lvl(tg, [[150,'স্বাভাবিক',G],[200,'সীমারেখা',Y],[500,'উচ্চ',O],[1e9,'অতি উচ্চ',R]]) });
+      }
+
+      if (ok(tc) && ok(hdl) && ok(tg)) {
+        const vldl = tg / 5, ldl = tc - hdl - vldl, non = tc - hdl;
+        
+        if (hdl > tc) w.push('HDL মোট কোলেস্টেরলের চেয়ে বেশি হতে পারে না।');
+        if (tg >= 400) w.push('TG ৪০০ বা বেশি হলে এই সূত্রে LDL নির্ভুল নয় (ডাইরেক্ট LDL করুন)।');
+        if (ldl < 0) w.push('LDL ঋণাত্মক এসেছে — ইনপুট যাচাই করুন।');
+
+        if(ldl >= 0) items.unshift({ l: 'LDL কোলেস্টেরল', v: ldl.toFixed(1) + ' mg/dL', f: 'TC − HDL − (TG ÷ ৫)', st: lvl(ldl, [[100,'আদর্শ',G],[130,'কাছাকাছি আদর্শ',G],[160,'সীমারেখা',Y],[190,'উচ্চ',O],[1e9,'অতি উচ্চ',R]]) });
+        items.push({ l: 'VLDL', v: vldl.toFixed(1) + ' mg/dL', f: 'TG ÷ ৫', st: lvl(vldl, [[31,'স্বাভাবিক',G],[1e9,'উচ্চ',R]]) });
+        items.push({ l: 'Non-HDL', v: non.toFixed(1) + ' mg/dL', f: 'TC − HDL', st: lvl(non, [[130,'আদর্শ',G],[160,'কাছাকাছি আদর্শ',Y],[190,'সীমারেখা',O],[1e9,'উচ্চ',R]]) });
+      }
+
+      return items.length ? { items, warns: w } : null;
+    } },
+    
+  lft: { name: '২. লিভার ফাংশন টেস্ট', title: 'লিভার ফাংশন টেস্ট',
+    f: [ ['tp','মোট প্রোটিন (g/dL)','৭.২'], ['alb','অ্যালবুমিন (g/dL)','৪.০'], ['tb','মোট বিলিরুবিন (mg/dL)','১.২'], ['db','ডাইরেক্ট বিলিরুবিন (mg/dL)','০.৩'] ],
+    calc() {
+      const tp = getNum('tp'), alb = getNum('alb'), tb = getNum('tb'), db = getNum('db'), items = [], w = [];
+      
+      if (ok(tp) && ok(alb)) {
+        if (alb >= tp) w.push('অ্যালবুমিন মোট প্রোটিনের চেয়ে কম হতে হবে।');
+        else {
+          const g = tp - alb, ag = alb / g;
+          items.push({ l: 'A/G Ratio', v: ag.toFixed(2), f: 'অ্যালবুমিন ÷ গ্লোবুলিন (স্বাভাবিক ১.১–২.৫)', st: ag < 1.1 ? ['কম', R] : ag > 2.5 ? ['বেশি', Y] : ['স্বাভাবিক', G] });
+          items.push({ l: 'গ্লোবুলিন', v: g.toFixed(2) + ' g/dL', f: 'মোট প্রোটিন − অ্যালবুমিন (স্বাভাবিক ২.০–৩.৫)', st: g < 2 ? ['কম', Y] : g > 3.5 ? ['বেশি', Y] : ['স্বাভাবিক', G] });
+        }
+      }
+      if (ok(tb)) {
+        items.push({ l: 'মোট বিলিরুবিন', v: tb + ' mg/dL', st: lvl(tb, [[1.2,'স্বাভাবিক',G],[1e9,'উচ্চ',Y]]) });
+      }
+      if (ok(db)) {
+        items.push({ l: 'ডাইরেক্ট বিলিরুবিন', v: db + ' mg/dL', st: lvl(db, [[0.3,'স্বাভাবিক',G],[1e9,'উচ্চ',Y]]) });
+      }
+      
+      if (ok(tb) && ok(db)) {
+        if (db > tb) w.push('ডাইরেক্ট বিলিরুবিন মোটের চেয়ে বেশি হতে পারে না।');
+        else {
+          const ib = tb - db;
+          items.unshift({ l: 'ইনডাইরেক্ট বিলিরুবিন', v: ib.toFixed(2) + ' mg/dL', f: 'মোট বিলিরুবিন − ডাইরেক্ট বিলিরুবিন', st: ib > 0.8 ? ['বেশি', Y] : ['স্বাভাবিক', G] });
+        }
+      }
+      return (items.length || w.length) ? { items, warns: w } : null;
+    } },
+    
+  iron: { name: '৩. আয়রন স্টাডিজ', title: 'আয়রন স্টাডিজ',
+    f: [ ['fe','সিরাম আয়রন (µg/dL)','৯০'], ['tibc','TIBC (µg/dL)','৩০০'] ],
+    calc() {
+      const fe = getNum('fe'), tibc = getNum('tibc'), items = [], w = [];
+      if (ok(fe)) items.push({ l: 'সিরাম আয়রন', v: fe + ' µg/dL', st: lvl(fe, [[65,'কম',Y],[175,'স্বাভাবিক',G],[1e9,'বেশি',O]]) });
+      if (ok(tibc)) items.push({ l: 'TIBC', v: tibc + ' µg/dL', st: lvl(tibc, [[250,'কম',Y],[450,'স্বাভাবিক',G],[1e9,'বেশি',O]]) });
+
+      if (ok(fe) && ok(tibc)) {
+        if (tibc <= 0) w.push('TIBC শূন্যের বেশি হতে হবে।');
+        else if (fe > tibc) w.push('সিরাম আয়রন TIBC এর চেয়ে বেশি — ইনপুট যাচাই করুন।');
+        else {
+          const ts = fe / tibc * 100;
+          items.unshift({ l: 'ট্রান্সফেরিন স্যাচুরেশন (TSAT)', v: ts.toFixed(1) + '%', f: '(সিরাম আয়রন ÷ TIBC) × ১০০', st: ts < 20 ? ['কম', R] : ts > 50 ? ['বেশি', O] : ['স্বাভাবিক', G] });
+          items.push({ l: 'UIBC', v: (tibc - fe).toFixed(1) + ' µg/dL', f: 'TIBC − সিরাম আয়রন' });
+        }
+      }
+      return (items.length || w.length) ? { items, warns: w } : null;
+    } },
+    
+  diab: { name: '৪. ডায়াবেটিস ও ইনসুলিন', title: 'ডায়াবেটিস ও ইনসুলিন',
+    f: [ ['a1c','HbA1c (%)','৬.৫'], ['glu','ফাস্টিং গ্লুকোজ (mg/dL)','১০০'], ['ins','ফাস্টিং ইনসুলিন (µU/mL)','১০'] ],
+    calc() {
+      const a1c = getNum('a1c'), glu = getNum('glu'), ins = getNum('ins'), items = [];
+      
+      if (ok(glu)) items.push({ l: 'ফাস্টিং গ্লুকোজ', v: glu + ' mg/dL', st: lvl(glu, [[100,'স্বাভাবিক',G],[126,'প্রি-ডায়াবেটিস',Y],[1e9,'ডায়াবেটিস',R]]) });
+      
+      if (ok(a1c)) {
+        items.unshift({ l: 'HbA1c', v: a1c + '%', st: lvl(a1c, [[5.7,'স্বাভাবিক',G],[6.5,'প্রি-ডায়াবেটিস',Y],[1e9,'ডায়াবেটিস',R]]) });
+        items.push({ l: 'গড় গ্লুকোজ (eAG)', v: (28.7 * a1c - 46.7).toFixed(1) + ' mg/dL', f: '(২৮.৭ × HbA1c) − ৪৬.৭' });
+      }
+      
+      if (ok(glu) && ok(ins)) {
+        const h = glu * ins / 405;
+        items.unshift({ l: 'HOMA-IR', v: h.toFixed(2), f: '(গ্লুকোজ × ইনসুলিন) ÷ ৪০৫', st: lvl(h, [[1,'স্বাভাবিক',G],[1.9,'প্রারম্ভিক রেজিস্ট্যান্স',Y],[2.9,'উল্লেখযোগ্য রেজিস্ট্যান্স',O],[1e9,'উচ্চ রেজিস্ট্যান্স',R]]) });
+      }
+      return items.length ? { items, warns: [] } : null;
+    } },
+    
+  renal: { name: '৫. রেনাল ফাংশন (eGFR)', title: 'রেনাল ফাংশন (eGFR)',
+    f: [ ['cr','সিরাম ক্রিয়েটিনিন (mg/dL)','১.০'], ['age','বয়স (বছর)','৩০'], ['sex','লিঙ্গ (পুরুষ=১, মহিলা=২)','১'] ],
+    calc() {
+      const cr = getNum('cr'), age = getNum('age'), sex = getNum('sex'), items = [];
+      if (ok(cr)) items.push({ l: 'সিরাম ক্রিয়েটিনিন', v: cr + ' mg/dL', st: lvl(cr, [[0.6,'কম',Y],[1.3,'স্বাভাবিক',G],[1e9,'বেশি',O]]) });
+      
+      if (ok(cr) && ok(age) && ok(sex)) {
+        const isFemale = sex === 2;
+        const kappa = isFemale ? 0.7 : 0.9;
+        const alpha = isFemale ? -0.241 : -0.302;
+        const cr_kappa = cr / kappa;
+        let egfr = 142 * Math.pow(Math.min(cr_kappa, 1), alpha) * Math.pow(Math.max(cr_kappa, 1), -1.200) * Math.pow(0.9938, age);
+        if (isFemale) egfr *= 1.012;
+        items.unshift({ l: 'eGFR', v: egfr.toFixed(1) + ' mL/min/1.73m²', f: 'CKD-EPI ২০২১ সূত্র', st: lvl(egfr, [[15,'ফেইলিউর',R],[30,'গুরুতর কম',R],[45,'মাঝারি কম',O],[60,'হালকা কম',Y],[90,'স্বাভাবিকের কাছাকাছি',Y],[1e9,'স্বাভাবিক',G]]) });
+      }
+      return items.length ? { items, warns: [] } : null;
+    } },
+    
+  elec: { name: '৬. ইলেক্ট্রোলাইটস', title: 'অ্যানায়ন গ্যাপ',
+    f: [ ['na','সোডিয়াম (Na)','১৪০'], ['cl','ক্লোরাইড (Cl)','১০০'], ['hco3','বায়োকার্বোনেট (HCO3)','২৪'] ],
+    calc() {
+      const na = getNum('na'), cl = getNum('cl'), hco3 = getNum('hco3'), items = [];
+      if (ok(na)) items.push({ l: 'সোডিয়াম', v: na + ' mmol/L', st: lvl(na, [[135,'কম',Y],[145,'স্বাভাবিক',G],[1e9,'বেশি',O]]) });
+      if (ok(cl)) items.push({ l: 'ক্লোরাইড', v: cl + ' mmol/L', st: lvl(cl, [[98,'কম',Y],[106,'স্বাভাবিক',G],[1e9,'বেশি',O]]) });
+      
+      if (ok(na) && ok(cl) && ok(hco3)) {
+        const ag = na - (cl + hco3);
+        items.unshift({ l: 'অ্যানায়ন গ্যাপ', v: ag.toFixed(1) + ' mmol/L', f: 'Na − (Cl + HCO3)', st: lvl(ag, [[8,'কম',Y],[12,'স্বাভাবিক',G],[1e9,'উচ্চ',R]]) });
+      }
+      return items.length ? { items, warns: [] } : null;
+    } },
+    
+  calc: { name: '৭. সংশোধিত ক্যালসিয়াম', title: 'সংশোধিত ক্যালসিয়াম',
+    f: [ ['ca','মাপা ক্যালসিয়াম (mg/dL)','৮.৫'], ['alb','সিরাম অ্যালবুমিন (g/dL)','৩.০'] ],
+    calc() {
+      const ca = getNum('ca'), alb = getNum('alb'), items = [];
+      if (ok(ca)) items.push({ l: 'মাপা ক্যালসিয়াম', v: ca + ' mg/dL', st: lvl(ca, [[8.5,'কম',Y],[10.2,'স্বাভাবিক',G],[1e9,'বেশি',O]]) });
+      
+      if (ok(ca) && ok(alb)) {
+        const cca = ca + 0.8 * (4 - alb);
+        items.unshift({ l: 'সংশোধিত ক্যালসিয়াম', v: cca.toFixed(2) + ' mg/dL', f: 'Ca + ০.৮ × (৪ − অ্যালবুমিন)', st: lvl(cca, [[8.5,'কম',R],[10.2,'স্বাভাবিক',G],[1e9,'উচ্চ',O]]) });
+      }
+      return items.length ? { items, warns: [] } : null;
+    } }
+};
+
+const cat = document.getElementById('cat'), boxCalc = document.getElementById('fieldsCalc'), outCalc = document.getElementById('resultCalc');
+Object.entries(S).forEach(([k, s]) => cat.add(new Option(s.name, k)));
+
+function buildCalc() {
+  const s = S[cat.value];
+  document.getElementById('titleCalc').textContent = s.title;
+  boxCalc.className = 'grid grid-cols-1 gap-4 ' + (s.f.length === 2 ? 'sm:grid-cols-2' : s.f.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2');
+  
+  boxCalc.innerHTML = s.f.map(([id, lb, ph]) => {
+    let title = lb, unit = '';
+    if (lb.includes('(TC)')) { title = 'মোট কোলেস্টেরল (TC)'; unit = 'mg/dL'; }
+    else if (lb.includes('(HDL)')) { title = 'এইচডিএল (HDL)'; unit = 'mg/dL'; }
+    else if (lb.includes('(TG)')) { title = 'ট্রাইগ্লিসারাইড (TG)'; unit = 'mg/dL'; }
+    else if (lb.includes('g/dL')) { title = lb.replace('(g/dL)', ''); unit = 'g/dL'; }
+    else if (lb.includes('mg/dL')) { title = lb.replace('(mg/dL)', ''); unit = 'mg/dL'; }
+    else if (lb.includes('µg/dL')) { title = lb.replace('(µg/dL)', ''); unit = 'µg/dL'; }
+    else if (lb.includes('mmol/L')) { title = lb.replace('(mmol/L)', ''); unit = 'mmol/L'; }
+    else if (lb.includes('(%)')) { title = lb.replace('(%)', ''); unit = '%'; }
+    else if (lb.includes('µU/mL')) { title = lb.replace('(µU/mL)', ''); unit = 'µU/mL'; }
+    else if (lb.includes('বছর')) { title = lb.replace('(বছর)', ''); unit = 'বছর'; }
+    else if (lb.includes('লিঙ্গ')) { title = 'লিঙ্গ'; unit = 'পুরুষ=১, মহিলা=২'; }
+    
+    return `<div>
+      <label class="block text-sm font-medium text-gray-600 mb-1">${title} <span class="text-xs text-green-600">(${unit})</span></label>
+      <input type="text" inputmode="decimal" id="${id}" placeholder="যেমন: ${ph}" class="w-full px-3 py-2 border rounded-lg">
+    </div>`;
+  }).join('');
+  
+  boxCalc.querySelectorAll('input').forEach(i => i.addEventListener('input', renderCalc));
+  outCalc.classList.add('hidden');
+}
+
+function renderCalc() {
+  const r = S[cat.value].calc();
+  if (!r) { outCalc.classList.add('hidden'); return; }
+  const badge = st => st ? `<span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full ${st[1]}">${st[0]}</span>` : '';
+  
+  let h = r.items.map((it, i) => i === 0
+    ? `<div class="border-b border-green-200 pb-3"><p class="text-lg font-bold text-gray-800">${it.l}: <span class="text-green-700">${it.v}</span>${badge(it.st)}</p>${it.f ? `<p class="text-xs text-gray-500">${it.f}</p>` : ''}</div>`
+    : `<div><p class="text-sm text-gray-700">${it.l}: <span class="font-semibold text-green-700">${it.v}</span>${badge(it.st)}</p>${it.f ? `<p class="text-xs text-gray-400">${it.f}</p>` : ''}</div>`).join('');
+    
+  h += r.warns.map(w => `<p class="text-red-600 text-sm font-medium">⚠️ ${w}</p>`).join('');
+  
+  outCalc.innerHTML = h;
+  outCalc.classList.remove('hidden');
+}
+cat.addEventListener('change', buildCalc);
+document.getElementById('resetCalc').addEventListener('click', buildCalc);
+buildCalc();
+</script>
+</body>
+</html>
